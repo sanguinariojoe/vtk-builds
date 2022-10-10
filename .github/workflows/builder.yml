@@ -86,10 +86,8 @@ jobs:
         target: ${{github.workspace}}/
 
     - name: Extract VTK tgz
-      uses: ihiroky/extract-action@v1
-      with:
-        file_path: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
-        extract_dir: ${{github.workspace}}/
+      run: |
+          tar -xvf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
     
     - name: List files
       run: |
@@ -104,7 +102,7 @@ jobs:
       if: runner.os == 'Linux'
 
     - name: Configure CMake (Windows)
-      run: cd VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}; cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install; cd ${{github.workspace}}
+      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'Windows'
 
     - name: Configure CMake (MacOS)
