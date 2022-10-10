@@ -91,6 +91,10 @@ jobs:
         file_path: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         extract_dir: ${{github.workspace}}/
     
+    - name: List files
+      run: |
+          ls ${{github.workspace}}
+    
     - name: Create installation folder
       run: |
           mkdir -p ${{github.workspace}}/install
