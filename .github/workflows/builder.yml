@@ -19,8 +19,6 @@ on:
         description: 'Whether shared or static libraries shall be built'
         required: true
         type: boolean
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
