@@ -1,0 +1,137 @@
+name: build and upload
+
+on:
+  workflow_call:
+    inputs:
+      version_major:
+        description: 'Which VTK version (major) are we considering'
+        required: true
+        type: string
+      version_minor:
+        description: 'Which VTK version (minor) are we considering'
+        required: true
+        type: string
+      version_patch:
+        description: 'Which VTK version (patch) are we considering'
+        required: true
+        type: string
+      shared:
+        description: 'Whether shared or static libraries shall be built'
+        required: true
+        type: boolean
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  CMAKE_OPTIONS: -DVTK_USE_MPI=ON -DVTK_GROUP_ENABLE_MPI=YES -DVTK_WRAP_PYTHON=ON -DVTK_PYTHON_VERSION=3 -DVTK_SMP_ENABLE_OPENMP=ON -DVTK_SMP_ENABLE_SEQUENTIAL=ON -DVTK_SMP_ENABLE_STDTHREAD=ON -DVTK_SMP_IMPLEMENTATION_TYPE=STDThread -DVTK_BUILD_EXAMPLES=OFF -DVTK_BUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+  BUILD_TYPE: Release
+
+
+jobs:
+  create_release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Determine release name
+      uses: haya14busa/action-cond@v1
+      id: release-name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-shared
+        if_false: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-static
+
+    - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: true
+        tag_name: ${{ steps.release-name.outputs.value }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - uses: rickstaa/action-create-tag@v1
+      id: create_tag
+      with:
+        tag: ${{ steps.release-name.outputs.value }}
+        message: ${{ steps.release-name.outputs.value }}
+        force_push_tag: true
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.release-name.outputs.value }}
+        release_name: ${{ steps.release-name.outputs.value }}
+        draft: false
+        prerelease: false
+
+  build:
+    runs-on: ${{ matrix.os }}
+    needs: [create_release]
+    strategy:
+        matrix:
+            os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://www.vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
+
+    - name: Extract VTK tgz
+      uses: ihiroky/extract-action@v1
+      with:
+        file_path: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        extract_dir: ${{github.workspace}}/
+    
+    - name: Create installation folder
+      run: |
+          mkdir -p ${{github.workspace}}/install
+
+    - name: Configure CMake (Linux)
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+      if: runner.os == 'Linux'
+
+    - name: Configure CMake (Windows)
+      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+      if: runner.os == 'Windows'
+
+    - name: Configure CMake (MacOS)
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+      if: runner.os == 'MacOS'
+
+    - name: Build
+      id: build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Install
+      working-directory: ${{github.workspace}}/build
+      run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Create tar.gz
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: ${{github.workspace}}
+          files: install/
+          outPath: vtk-${{ runner.os }}.tar.gz
+
+    - name: Upload tar.gz
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ${{github.workspace}}/vtk-${{ runner.os }}.tar.gz
+        asset_name: vtk-${{ runner.os }}.tar.gz
+        asset_content_type: application/zip

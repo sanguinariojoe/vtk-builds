@@ -1,0 +1,26 @@
+name: VTK-9.2.2
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  all:
+    uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml
+    with:
+      version_major: 9
+      version_minor: 2
+      version_patch: 2
+      shared: true
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml
+    with:
+      version_major: 9
+      version_minor: 2
+      version_patch: 2
+      shared: false
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
