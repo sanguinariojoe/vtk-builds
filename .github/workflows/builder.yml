@@ -104,7 +104,7 @@ jobs:
       if: runner.os == 'Linux'
 
     - name: Configure CMake (Windows)
-      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cd VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}; cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install; cd ${{github.workspace}}
       if: runner.os == 'Windows'
 
     - name: Configure CMake (MacOS)
