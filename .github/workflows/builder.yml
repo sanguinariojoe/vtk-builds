@@ -118,13 +118,12 @@ jobs:
       run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Create tar.gz
-        uses: a7ul/tar-action@v1.1.0
-        id: compress
-        with:
-          command: c
-          cwd: ${{github.workspace}}
-          files: install/
-          outPath: vtk-${{ runner.os }}.tar.gz
+      uses: a7ul/tar-action@v1.1.0
+      with:
+        command: c
+        cwd: ${{github.workspace}}
+        files: install/
+        outPath: vtk-${{ runner.os }}.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1

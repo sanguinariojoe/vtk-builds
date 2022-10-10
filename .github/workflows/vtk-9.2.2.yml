@@ -7,7 +7,7 @@ on:
     branches: [ $default-branch ]
 
 jobs:
-  all:
+  shared:
     uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml
     with:
       version_major: 9
@@ -16,6 +16,7 @@ jobs:
       shared: true
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  static:
     uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml
     with:
       version_major: 9
