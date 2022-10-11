@@ -143,6 +143,7 @@ jobs:
 
   build_multiarch:
     runs-on: ubuntu-22.04
+    needs: [create_release]
     name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
 
     strategy:
