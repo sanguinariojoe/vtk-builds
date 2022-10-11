@@ -121,7 +121,7 @@ jobs:
       if: runner.os == 'Linux'
 
     - name: Configure CMake (Windows)
-      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DVTK_MODULE_ENABLE_VTK_tiff=NO -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'Windows'
 
     - name: Configure CMake (MacOS)
