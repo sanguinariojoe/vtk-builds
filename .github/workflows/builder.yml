@@ -82,7 +82,7 @@ jobs:
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
-        url: https://www.vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
 
     - name: Extract VTK tgz
@@ -201,7 +201,7 @@ jobs:
 
           # Produce a binary artifact and place it in the mounted volume
           run: |
-            curl https://www.vtk.org/files/release/${version_major}.${version_minor}/VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
+            curl https://vtk.org/files/release/${version_major}.${version_minor}/VTK-${version_major}.${version_minor}.${version_patch}.tar.gz --output VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
             tar -xvf VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
             mkdir build
             mkdir install
