@@ -22,7 +22,7 @@ on:
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  CMAKE_OPTIONS: -DVTK_USE_MPI=OFF -DVTK_GROUP_ENABLE_MPI=NO -DVTK_WRAP_PYTHON=OFF -DVTK_SMP_ENABLE_OPENMP=ON -DVTK_SMP_ENABLE_SEQUENTIAL=ON -DVTK_SMP_ENABLE_STDTHREAD=ON -DVTK_SMP_IMPLEMENTATION_TYPE=STDThread -DVTK_GROUP_ENABLE_Rendering=NO -DVTK_BUILD_EXAMPLES=OFF -DVTK_BUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=ON
+  CMAKE_OPTIONS: -DVTK_BUILD_EXAMPLES=OFF -DVTK_BUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=ON
   BUILD_TYPE: Release
 
 
@@ -96,6 +96,12 @@ jobs:
     - name: Create installation folder
       run: |
           mkdir -p ${{github.workspace}}/install
+
+    - uses: actions/setup-python@v3
+
+    - name: Install deps (Linux)
+      run: apt update && apt install libopenmpi-dev libopengl-dev
+      if: runner.os == 'Linux'
 
     - name: Configure CMake (Linux)
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
