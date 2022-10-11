@@ -19,6 +19,11 @@ on:
         description: 'Whether shared or static libraries shall be built'
         required: true
         type: boolean
+      threads:
+        description: 'Number of compilation threads'
+        required: false
+        type: number
+        default: 4
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -103,21 +108,29 @@ jobs:
       run: sudo apt update && sudo apt install libopenmpi-dev libopengl-dev libglx-dev libglw-dev
       if: runner.os == 'Linux'
 
+    - name: BUILD_SHARED_LIBS value
+      uses: haya14busa/action-cond@v1
+      id: BUILD_SHARED_LIBS
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: -DBUILD_SHARED_LIBS=ON
+        if_false: -DBUILD_SHARED_LIBS=OFF
+
     - name: Configure CMake (Linux)
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'Linux'
 
     - name: Configure CMake (Windows)
-      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'Windows'
 
     - name: Configure CMake (MacOS)
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'MacOS'
 
     - name: Build
       id: build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j ${{inputs.threads}}
 
     - name: Install
       working-directory: ${{github.workspace}}/build
@@ -160,6 +173,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.1.0
+
+      - name: BUILD_SHARED_LIBS value
+        uses: haya14busa/action-cond@v1
+        id: BUILD_SHARED_LIBS
+        with:
+          cond: ${{ inputs.shared }}
+          if_true: -DBUILD_SHARED_LIBS=ON
+          if_false: -DBUILD_SHARED_LIBS=OFF
+
       - uses: uraimo/run-on-arch-action@v2
         name: Build artifact
         id: build
@@ -184,8 +206,10 @@ jobs:
             version_major: ${{ inputs.version_major }}
             version_minor: ${{ inputs.version_minor }}
             version_patch: ${{ inputs.version_patch }}
+            shared: ${{ inputs.shared }}
+            threads: ${{ inputs.threads }}
             BUILD_TYPE: ${{ env.BUILD_TYPE }}            
-            CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }}            
+            CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
 
           shell: /bin/sh
 
@@ -206,7 +230,7 @@ jobs:
             mkdir build
             mkdir install
             cmake -B build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=install VTK-${version_major}.${version_minor}.${version_patch}
-            cmake --build build --config ${BUILD_TYPE}
+            cmake --build build --config ${BUILD_TYPE} -j ${threads}
             cmake --install build --config ${BUILD_TYPE}
             tar -cvzf install/* vtk-Linux-${ARCH}.tar.gz
             cp vtk-Linux-${ARCH}.tar.gz /artifacts/vtk-Linux-${ARCH}.tar.gz
