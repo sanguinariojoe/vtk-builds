@@ -100,7 +100,7 @@ jobs:
     - uses: actions/setup-python@v3
 
     - name: Install deps (Linux)
-      run: apt update && apt install libopenmpi-dev libopengl-dev
+      run: sudo apt update && sudo apt install libopenmpi-dev libopengl-dev
       if: runner.os == 'Linux'
 
     - name: Configure CMake (Linux)
