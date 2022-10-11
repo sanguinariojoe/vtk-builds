@@ -129,7 +129,7 @@ jobs:
         command: c
         cwd: ${{github.workspace}}
         files: install/
-        outPath: vtk-${{ runner.os }}.tar.gz
+        outPath: vtk-${{ runner.os }}-x86_64.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
@@ -137,6 +137,86 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ${{github.workspace}}/vtk-${{ runner.os }}.tar.gz
-        asset_name: vtk-${{ runner.os }}.tar.gz
+        asset_path: ${{github.workspace}}/vtk-${{ runner.os }}-x86_64.tar.gz
+        asset_name: vtk-${{ runner.os }}-x86_64.tar.gz
         asset_content_type: application/zip
+
+  build_multiarch:
+    runs-on: ubuntu-22.04
+    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+
+    strategy:
+      matrix:
+        include:
+          - arch: armv7
+            distro: ubuntu22.04
+          - arch: aarch64
+            distro: ubuntu22.04
+          - arch: s390x
+            distro: ubuntu22.04
+          - arch: ppc64le
+            distro: ubuntu22.04
+
+    steps:
+      - uses: actions/checkout@v2.1.0
+      - uses: uraimo/run-on-arch-action@v2
+        name: Build artifact
+        id: build
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.distro }}
+
+          # Not required, but speeds up builds
+          githubToken: ${{ github.token }}
+
+          # Create an artifacts directory
+          setup: |
+            mkdir -p "${PWD}/artifacts"
+
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts:/artifacts"
+
+          # Pass some environment variables to the container
+          env: | # YAML, but pipe character is necessary
+            ARCH: ${{ matrix.arch }}
+            version_major: ${{ inputs.version_major }}
+            version_minor: ${{ inputs.version_minor }}
+            version_patch: ${{ inputs.version_patch }}
+            BUILD_TYPE: ${{ env.BUILD_TYPE }}            
+            CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }}            
+
+          shell: /bin/sh
+
+          # Install some dependencies in the container. This speeds up builds if
+          # you are also using githubToken. Any dependencies installed here will
+          # be part of the container image that gets cached, so subsequent
+          # builds don't have to re-install them. The image layer is cached
+          # publicly in your project's package repository, so it is vital that
+          # no secrets are present in the container state or logs.
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+
+          # Produce a binary artifact and place it in the mounted volume
+          run: |
+            curl https://www.vtk.org/files/release/${version_major}.${version_minor}/VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
+            tar -xvf VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
+            mkdir build
+            mkdir install
+            cmake -B build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=install VTK-${version_major}.${version_minor}.${version_patch}
+            cmake --build build --config ${BUILD_TYPE}
+            cmake --install build --config ${BUILD_TYPE}
+            tar -cvzf install/* vtk-Linux-${ARCH}.tar.gz
+            cp vtk-Linux-${ARCH}.tar.gz /artifacts/vtk-Linux-${ARCH}.tar.gz
+            echo "Produced artifact at /artifacts/vtk-Linux-${ARCH}.tar.gz"
+
+      - name: Upload tar.gz
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${PWD}/artifacts/vtk-Linux-${{ matrix.arch }}.tar.gz
+          asset_name: vtk-Linux-${{ matrix.arch }}.tar.gz
+          asset_content_type: application/zip
