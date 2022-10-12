@@ -191,11 +191,11 @@ jobs:
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
-        target: ${PWD}/artifacts/
+        target: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
-          tar -xvzf ${PWD}/artifacts/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${PWD}/artifacts/
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${PWD}/artifacts/
     
     - name: List files
       run: |
