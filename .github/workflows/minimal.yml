@@ -1,4 +1,4 @@
-name: build and upload
+name: build and upload vtk-minimal
 
 on:
   workflow_call:
@@ -219,6 +219,7 @@ jobs:
           version_major: ${{ inputs.version_major }}
           version_minor: ${{ inputs.version_minor }}
           version_patch: ${{ inputs.version_patch }}
+          threads: ${{ inputs.threads }}
           BUILD_TYPE: ${{ env.BUILD_TYPE }}            
           CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{env.VTK_MODULES}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
 
