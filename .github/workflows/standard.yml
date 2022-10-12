@@ -24,7 +24,6 @@ on:
         required: false
         type: number
         default: 4
-on:
   workflow_run:
     workflows: ["build and upload vtk-minimal"]
     types: 
