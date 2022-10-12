@@ -28,8 +28,8 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   CMAKE_OPTIONS: -DVTK_BUILD_EXAMPLES=OFF -DVTK_BUILD_TESTING=OFF -DCMAKE_VERBOSE_MAKEFILE=ON
+  VTK_MODULES: -DVTK_GROUP_ENABLE_Imaging=NO -DVTK_GROUP_ENABLE_Qt=NO -DVTK_GROUP_ENABLE_Rendering=NO -DVTK_GROUP_ENABLE_Views=NO -DVTK_GROUP_ENABLE_Web=NO
   BUILD_TYPE: Release
-
 
 jobs:
   create_release:
@@ -46,8 +46,8 @@ jobs:
       id: release-name
       with:
         cond: ${{ inputs.shared }}
-        if_true: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-shared
-        if_false: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-static
+        if_true: VTK-minimal-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-shared
+        if_false: VTK-minimal-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-static
 
     - uses: dev-drprasad/delete-tag-and-release@v0.2.0
       with:
@@ -117,15 +117,15 @@ jobs:
         if_false: -DBUILD_SHARED_LIBS=OFF
 
     - name: Configure CMake (Linux)
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{env.VTK_MODULES}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'Linux'
 
     - name: Configure CMake (Windows)
-      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DVTK_MODULE_ENABLE_VTK_tiff=NO -DVTK_MODULE_ENABLE_VTK_netcdf=NO -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{env.VTK_MODULES}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DVTK_MODULE_ENABLE_VTK_tiff=NO -DVTK_MODULE_ENABLE_VTK_netcdf=NO -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'Windows'
 
     - name: Configure CMake (MacOS)
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{env.CMAKE_OPTIONS}} ${{env.VTK_MODULES}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}
       if: runner.os == 'MacOS'
 
     - name: Build
@@ -142,7 +142,7 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/install
         files: ./
-        outPath: ../vtk-${{ runner.os }}-x86_64.tar.gz
+        outPath: ../vtk-minimal-${{ runner.os }}-x86_64.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
@@ -150,8 +150,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ${{github.workspace}}/vtk-${{ runner.os }}-x86_64.tar.gz
-        asset_name: vtk-${{ runner.os }}-x86_64.tar.gz
+        asset_path: ${{github.workspace}}/vtk-minimal-${{ runner.os }}-x86_64.tar.gz
+        asset_name: vtk-minimal-${{ runner.os }}-x86_64.tar.gz
         asset_content_type: application/zip
 
   build_multiarch:
@@ -201,7 +201,7 @@ jobs:
       run: |
           ls ${PWD}/artifacts/
 
-    - name: Configure CMake
+    - name: Build
       uses: uraimo/run-on-arch-action@v2
       with:
         arch: ${{ matrix.arch }}
@@ -220,7 +220,7 @@ jobs:
           version_minor: ${{ inputs.version_minor }}
           version_patch: ${{ inputs.version_patch }}
           BUILD_TYPE: ${{ env.BUILD_TYPE }}            
-          CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
+          CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{env.VTK_MODULES}} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
 
         shell: /bin/sh
 
@@ -236,104 +236,6 @@ jobs:
 
         run: |
           cmake -B /artifacts/build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/artifacts/install /artifacts/VTK-${version_major}.${version_minor}.${version_patch}
-
-    - name: Build Common
-      uses: uraimo/run-on-arch-action@v2
-      with:
-        arch: ${{ matrix.arch }}
-        distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
-
-        # Mount the artifacts directory as /artifacts in the container
-        dockerRunArgs: |
-          --volume "${PWD}/artifacts:/artifacts"
-
-        # Pass some environment variables to the container
-        env: | # YAML, but pipe character is necessary
-          threads: ${{ inputs.threads }}
-          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
-
-        shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
-
-        run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target CommonColor CommonComputationalGeometry CommonCore CommonDataModel CommonExecutionModel CommonMath CommonMisc CommonSystem CommonTransforms
-
-    - name: Build Core
-      uses: uraimo/run-on-arch-action@v2
-      with:
-        arch: ${{ matrix.arch }}
-        distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
-
-        # Mount the artifacts directory as /artifacts in the container
-        dockerRunArgs: |
-          --volume "${PWD}/artifacts:/artifacts"
-
-        # Pass some environment variables to the container
-        env: | # YAML, but pipe character is necessary
-          threads: ${{ inputs.threads }}
-          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
-
-        shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
-
-        run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ChartsCore FiltersCore GeovisCore IOCore ImagingCore ViewsCore ParallelCore RenderingCore
-
-    - name: Build All
-      uses: uraimo/run-on-arch-action@v2
-      with:
-        arch: ${{ matrix.arch }}
-        distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
-
-        # Mount the artifacts directory as /artifacts in the container
-        dockerRunArgs: |
-          --volume "${PWD}/artifacts:/artifacts"
-
-        # Pass some environment variables to the container
-        env: | # YAML, but pipe character is necessary
-          threads: ${{ inputs.threads }}
-          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
-
-        shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
-
-        run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads}
           cmake --install /artifacts/build --config ${BUILD_TYPE}
 
@@ -343,7 +245,7 @@ jobs:
         command: c
         cwd: ${PWD}/artifacts/install/
         files: ./
-        outPath: ${{github.workspace}}/vtk-Linux-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-minimal-Linux-${{ matrix.arch }}.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
@@ -351,6 +253,19 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ${{github.workspace}}/vtk-Linux-${{ matrix.arch }}.tar.gz
+        asset_path: ${{github.workspace}}/vtk-minimal-Linux-${{ matrix.arch }}.tar.gz
         asset_name: vtk-Linux-${{ matrix.arch }}.tar.gz
         asset_content_type: application/zip
+
+    - name: Create artifact
+      uses: a7ul/tar-action@v1.1.0
+      with:
+        command: c
+        cwd: ${PWD}/artifacts/
+        files: ./
+        outPath: ${{github.workspace}}/vtk-minimal-artifacts-${{ matrix.arch }}.tar.gz
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Compilation environment for ${{ matrix.arch }}
+        path: ${{github.workspace}}/vtk-minimal-artifacts-${{ matrix.arch }}.tar.gz
