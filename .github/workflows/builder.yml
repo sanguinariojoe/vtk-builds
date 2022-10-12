@@ -23,7 +23,7 @@ on:
         description: 'Number of compilation threads'
         required: false
         type: number
-        default: 8
+        default: 4
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -92,7 +92,7 @@ jobs:
 
     - name: Extract VTK tgz
       run: |
-          tar -xvf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
     
     - name: List files
       run: |
@@ -172,76 +172,185 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-      - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v2.1.0
 
-      - name: BUILD_SHARED_LIBS value
-        uses: haya14busa/action-cond@v1
-        id: BUILD_SHARED_LIBS
-        with:
-          cond: ${{ inputs.shared }}
-          if_true: -DBUILD_SHARED_LIBS=ON
-          if_false: -DBUILD_SHARED_LIBS=OFF
+    - name: BUILD_SHARED_LIBS value
+      uses: haya14busa/action-cond@v1
+      id: BUILD_SHARED_LIBS
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: -DBUILD_SHARED_LIBS=ON
+        if_false: -DBUILD_SHARED_LIBS=OFF
 
-      - uses: uraimo/run-on-arch-action@v2
-        name: Build artifact
-        id: build
-        with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
+    - name: Create folders
+      run: |
+          mkdir -p ${PWD}/artifacts/build
+          mkdir -p ${PWD}/artifacts/install
 
-          # Not required, but speeds up builds
-          githubToken: ${{ github.token }}
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${PWD}/artifacts/
 
-          # Create an artifacts directory
-          setup: |
-            mkdir -p "${PWD}/artifacts"
+    - name: Extract VTK tgz
+      run: |
+          tar -xvzf ${PWD}/artifacts/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${PWD}/artifacts/
+    
+    - name: List files
+      run: |
+          ls ${PWD}/artifacts/
 
-          # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --volume "${PWD}/artifacts:/artifacts"
+    - name: Configure CMake
+      uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
 
-          # Pass some environment variables to the container
-          env: | # YAML, but pipe character is necessary
-            ARCH: ${{ matrix.arch }}
-            version_major: ${{ inputs.version_major }}
-            version_minor: ${{ inputs.version_minor }}
-            version_patch: ${{ inputs.version_patch }}
-            shared: ${{ inputs.shared }}
-            threads: ${{ inputs.threads }}
-            BUILD_TYPE: ${{ env.BUILD_TYPE }}            
-            CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
+        # Not required, but speeds up builds
+        githubToken: ${{ github.token }}
 
-          shell: /bin/sh
+        # Mount the artifacts directory as /artifacts in the container
+        dockerRunArgs: |
+          --volume "${PWD}/artifacts:/artifacts"
 
-          # Install some dependencies in the container. This speeds up builds if
-          # you are also using githubToken. Any dependencies installed here will
-          # be part of the container image that gets cached, so subsequent
-          # builds don't have to re-install them. The image layer is cached
-          # publicly in your project's package repository, so it is vital that
-          # no secrets are present in the container state or logs.
-          install: |
-            apt-get update -q -y
-            apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+        # Pass some environment variables to the container
+        env: | # YAML, but pipe character is necessary
+          version_major: ${{ inputs.version_major }}
+          version_minor: ${{ inputs.version_minor }}
+          version_patch: ${{ inputs.version_patch }}
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
+          CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
 
-          # Produce a binary artifact and place it in the mounted volume
-          run: |
-            curl https://vtk.org/files/release/${version_major}.${version_minor}/VTK-${version_major}.${version_minor}.${version_patch}.tar.gz --output VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
-            tar -xvf VTK-${version_major}.${version_minor}.${version_patch}.tar.gz
-            mkdir build
-            mkdir install
-            cmake -B build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=install VTK-${version_major}.${version_minor}.${version_patch}
-            cmake --build build --config ${BUILD_TYPE} -j ${threads}
-            cmake --install build --config ${BUILD_TYPE}
-            tar -cvzf install/* vtk-Linux-${ARCH}.tar.gz
-            cp vtk-Linux-${ARCH}.tar.gz /artifacts/vtk-Linux-${ARCH}.tar.gz
-            echo "Produced artifact at /artifacts/vtk-Linux-${ARCH}.tar.gz"
+        shell: /bin/sh
 
-      - name: Upload tar.gz
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ${PWD}/artifacts/vtk-Linux-${{ matrix.arch }}.tar.gz
-          asset_name: vtk-Linux-${{ matrix.arch }}.tar.gz
-          asset_content_type: application/zip
+        # Install some dependencies in the container. This speeds up builds if
+        # you are also using githubToken. Any dependencies installed here will
+        # be part of the container image that gets cached, so subsequent
+        # builds don't have to re-install them. The image layer is cached
+        # publicly in your project's package repository, so it is vital that
+        # no secrets are present in the container state or logs.
+        install: |
+          apt-get update -q -y
+          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+
+        run: |
+          cmake -B /artifacts/build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/artifacts/install /artifacts/VTK-${version_major}.${version_minor}.${version_patch}
+
+    - name: Build Common
+      uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
+
+        # Not required, but speeds up builds
+        githubToken: ${{ github.token }}
+
+        # Mount the artifacts directory as /artifacts in the container
+        dockerRunArgs: |
+          --volume "${PWD}/artifacts:/artifacts"
+
+        # Pass some environment variables to the container
+        env: | # YAML, but pipe character is necessary
+          threads: ${{ inputs.threads }}
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
+
+        shell: /bin/sh
+
+        # Install some dependencies in the container. This speeds up builds if
+        # you are also using githubToken. Any dependencies installed here will
+        # be part of the container image that gets cached, so subsequent
+        # builds don't have to re-install them. The image layer is cached
+        # publicly in your project's package repository, so it is vital that
+        # no secrets are present in the container state or logs.
+        install: |
+          apt-get update -q -y
+          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+
+        run: |
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target CommonColor CommonComputationalGeometry CommonCore CommonDataModel CommonExecutionModel CommonMath CommonMisc CommonSystem CommonTransforms
+
+    - name: Build Core
+      uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
+
+        # Not required, but speeds up builds
+        githubToken: ${{ github.token }}
+
+        # Mount the artifacts directory as /artifacts in the container
+        dockerRunArgs: |
+          --volume "${PWD}/artifacts:/artifacts"
+
+        # Pass some environment variables to the container
+        env: | # YAML, but pipe character is necessary
+          threads: ${{ inputs.threads }}
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
+
+        shell: /bin/sh
+
+        # Install some dependencies in the container. This speeds up builds if
+        # you are also using githubToken. Any dependencies installed here will
+        # be part of the container image that gets cached, so subsequent
+        # builds don't have to re-install them. The image layer is cached
+        # publicly in your project's package repository, so it is vital that
+        # no secrets are present in the container state or logs.
+        install: |
+          apt-get update -q -y
+          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+
+        run: |
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ChartsCore FiltersCore FiltersGeneral GeovisCore IOCore IOLegacy IOParallel IOParallelXML IOXML IOXMLParser ImagingCore ImagingGeneral ImagingMath ViewsCore ParallelCore RenderingCore RenderingOpenGL2
+
+    - name: Build All
+      uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
+
+        # Not required, but speeds up builds
+        githubToken: ${{ github.token }}
+
+        # Mount the artifacts directory as /artifacts in the container
+        dockerRunArgs: |
+          --volume "${PWD}/artifacts:/artifacts"
+
+        # Pass some environment variables to the container
+        env: | # YAML, but pipe character is necessary
+          threads: ${{ inputs.threads }}
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
+
+        shell: /bin/sh
+
+        # Install some dependencies in the container. This speeds up builds if
+        # you are also using githubToken. Any dependencies installed here will
+        # be part of the container image that gets cached, so subsequent
+        # builds don't have to re-install them. The image layer is cached
+        # publicly in your project's package repository, so it is vital that
+        # no secrets are present in the container state or logs.
+        install: |
+          apt-get update -q -y
+          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+
+        run: |
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads}
+          cmake --install /artifacts/build --config ${BUILD_TYPE}
+
+    - name: Create tar.gz
+      uses: a7ul/tar-action@v1.1.0
+      with:
+        command: c
+        cwd: ${{github.workspace}}
+        files: ${PWD}/artifacts/install/
+        outPath: vtk-Linux-${{ matrix.arch }}.tar.gz
+
+    - name: Upload tar.gz
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ${{github.workspace}}/vtk-Linux-${{ matrix.arch }}.tar.gz
+        asset_name: vtk-Linux-${{ matrix.arch }}.tar.gz
+        asset_content_type: application/zip
