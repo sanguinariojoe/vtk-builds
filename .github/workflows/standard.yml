@@ -147,7 +147,7 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/install
         files: ./
-        outPath: ../vtk-${{ runner.os }}-x86_64.tar.gz
+        outPath: ${{github.workspace}}/vtk-${{ runner.os }}-x86_64.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
