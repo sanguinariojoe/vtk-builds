@@ -301,7 +301,7 @@ jobs:
           apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ChartsCore FiltersCore FiltersGeneral GeovisCore IOCore IOLegacy IOParallel IOParallelXML IOXML IOXMLParser ImagingCore ImagingGeneral ImagingMath ViewsCore ParallelCore RenderingCore RenderingOpenGL2
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ChartsCore FiltersCore GeovisCore IOCore ImagingCore ViewsCore ParallelCore RenderingCore
 
     - name: Build All
       uses: uraimo/run-on-arch-action@v2
