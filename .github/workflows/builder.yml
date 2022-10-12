@@ -140,9 +140,9 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}
-        files: install/
-        outPath: vtk-${{ runner.os }}-x86_64.tar.gz
+        cwd: ${{github.workspace}}/install
+        files: ./
+        outPath: ../vtk-${{ runner.os }}-x86_64.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
@@ -341,9 +341,9 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}
-        files: ${PWD}/artifacts/install/
-        outPath: vtk-Linux-${{ matrix.arch }}.tar.gz
+        cwd: ${PWD}/artifacts/install/
+        files: ./
+        outPath: ${{github.workspace}}/vtk-Linux-${{ matrix.arch }}.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
