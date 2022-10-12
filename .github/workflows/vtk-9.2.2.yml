@@ -21,19 +21,3 @@ jobs:
       version_patch: 2
       shared: false
     secrets: inherit
-  shared:
-    uses: sanguinariojoe/vtk-builds/.github/workflows/standard.yml@main
-    with:
-      version_major: 9
-      version_minor: 2
-      version_patch: 2
-      shared: true
-    secrets: inherit
-  static:
-    uses: sanguinariojoe/vtk-builds/.github/workflows/standard.yml@main
-    with:
-      version_major: 9
-      version_minor: 2
-      version_patch: 2
-      shared: false
-    secrets: inherit
