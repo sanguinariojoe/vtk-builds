@@ -278,7 +278,7 @@ jobs:
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Common) for ${{ matrix.arch }}
-        path: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
@@ -361,7 +361,7 @@ jobs:
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (IO) for ${{ matrix.arch }}
-        path: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
@@ -444,7 +444,7 @@ jobs:
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Imaging) for ${{ matrix.arch }}
-        path: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
@@ -527,7 +527,7 @@ jobs:
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Rendering) for ${{ matrix.arch }}
-        path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
@@ -610,7 +610,7 @@ jobs:
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Rendering) for ${{ matrix.arch }}
-        path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
