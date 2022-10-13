@@ -291,6 +291,11 @@ jobs:
         name: Compilation environment (Common) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: Compilation environment (Common) for ${{ matrix.arch }}
+
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -333,15 +338,6 @@ jobs:
 
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target IOCore
-
-    - name: Create artifacts list
-      id: artifacts_list 
-      uses: MichaelMelena/list-artifacts@v1
-
-    - name: Purge artifacts
-      uses: MichaelMelena/remove-artifacts@v1
-      with:
-        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -396,6 +392,11 @@ jobs:
         name: Compilation environment (IO) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: Compilation environment (IO) for ${{ matrix.arch }}
+
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -438,15 +439,6 @@ jobs:
 
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ImagingCore
-
-    - name: Create artifacts list
-      id: artifacts_list 
-      uses: MichaelMelena/list-artifacts@v1
-
-    - name: Purge artifacts
-      uses: MichaelMelena/remove-artifacts@v1
-      with:
-        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -501,6 +493,11 @@ jobs:
         name: Compilation environment (Imaging) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: Compilation environment (Imaging) for ${{ matrix.arch }}
+
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -543,15 +540,6 @@ jobs:
 
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target RenderingCore
-
-    - name: Create artifacts list
-      id: artifacts_list 
-      uses: MichaelMelena/list-artifacts@v1
-
-    - name: Purge artifacts
-      uses: MichaelMelena/remove-artifacts@v1
-      with:
-        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -606,6 +594,11 @@ jobs:
         name: Compilation environment (Rendering) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: Compilation environment (Rendering) for ${{ matrix.arch }}
+
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -648,15 +641,6 @@ jobs:
 
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target FiltersCore
-
-    - name: Create artifacts list
-      id: artifacts_list 
-      uses: MichaelMelena/list-artifacts@v1
-
-    - name: Purge artifacts
-      uses: MichaelMelena/remove-artifacts@v1
-      with:
-        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -711,6 +695,11 @@ jobs:
         name: Compilation environment (Filters) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: Compilation environment (Filters) for ${{ matrix.arch }}
+
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -754,15 +743,6 @@ jobs:
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads}
           cmake --install /artifacts/build --config ${BUILD_TYPE}
-
-    - name: Create artifacts list
-      id: artifacts_list 
-      uses: MichaelMelena/list-artifacts@v1
-
-    - name: Purge artifacts
-      uses: MichaelMelena/remove-artifacts@v1
-      with:
-        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create tar.gz
       uses: a7ul/tar-action@v1.1.0
