@@ -334,6 +334,15 @@ jobs:
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target IOCore
 
+    - name: Create artifacts list
+      id: artifacts_list 
+      uses: MichaelMelena/list-artifacts@v1
+
+    - name: Purge artifacts
+      uses: MichaelMelena/remove-artifacts@v1
+      with:
+        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
+
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
       with:
@@ -429,6 +438,15 @@ jobs:
 
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ImagingCore
+
+    - name: Create artifacts list
+      id: artifacts_list 
+      uses: MichaelMelena/list-artifacts@v1
+
+    - name: Purge artifacts
+      uses: MichaelMelena/remove-artifacts@v1
+      with:
+        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -526,6 +544,15 @@ jobs:
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target RenderingCore
 
+    - name: Create artifacts list
+      id: artifacts_list 
+      uses: MichaelMelena/list-artifacts@v1
+
+    - name: Purge artifacts
+      uses: MichaelMelena/remove-artifacts@v1
+      with:
+        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
+
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
       with:
@@ -621,6 +648,15 @@ jobs:
 
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target FiltersCore
+
+    - name: Create artifacts list
+      id: artifacts_list 
+      uses: MichaelMelena/list-artifacts@v1
+
+    - name: Purge artifacts
+      uses: MichaelMelena/remove-artifacts@v1
+      with:
+        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -718,6 +754,15 @@ jobs:
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads}
           cmake --install /artifacts/build --config ${BUILD_TYPE}
+
+    - name: Create artifacts list
+      id: artifacts_list 
+      uses: MichaelMelena/list-artifacts@v1
+
+    - name: Purge artifacts
+      uses: MichaelMelena/remove-artifacts@v1
+      with:
+        artifacts: ${{ steps.artifacts_list.outputs.artifacts }}
 
     - name: Create tar.gz
       uses: a7ul/tar-action@v1.1.0
