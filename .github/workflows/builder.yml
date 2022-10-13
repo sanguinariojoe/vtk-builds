@@ -181,6 +181,14 @@ jobs:
         if_true: -DBUILD_SHARED_LIBS=ON
         if_false: -DBUILD_SHARED_LIBS=OFF
 
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: Compilation environment for ${{ matrix.arch }}-shared
+        if_false: Compilation environment for ${{ matrix.arch }}-static
+
     - name: Create folders
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -248,7 +256,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: Compilation environment (Common) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz
 
   # ========================
@@ -274,6 +282,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: Compilation environment for ${{ matrix.arch }}-shared
+        if_false: Compilation environment for ${{ matrix.arch }}-static
+
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
@@ -288,13 +304,13 @@ jobs:
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
-        name: Compilation environment (Common) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
       uses: geekyeggo/delete-artifact@v2
       with:
-        name: Compilation environment (Common) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
 
     - name: Extract previous compilation step tgz
       run: |
@@ -349,7 +365,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: Compilation environment (IO) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz
 
   # ========================
@@ -375,6 +391,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: Compilation environment for ${{ matrix.arch }}-shared
+        if_false: Compilation environment for ${{ matrix.arch }}-static
+
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
@@ -389,13 +413,13 @@ jobs:
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
-        name: Compilation environment (IO) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
       uses: geekyeggo/delete-artifact@v2
       with:
-        name: Compilation environment (IO) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
 
     - name: Extract previous compilation step tgz
       run: |
@@ -450,7 +474,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: Compilation environment (Imaging) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz
         
   # ========================
@@ -476,6 +500,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: Compilation environment for ${{ matrix.arch }}-shared
+        if_false: Compilation environment for ${{ matrix.arch }}-static
+
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
@@ -490,13 +522,13 @@ jobs:
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
-        name: Compilation environment (Imaging) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
       uses: geekyeggo/delete-artifact@v2
       with:
-        name: Compilation environment (Imaging) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
 
     - name: Extract previous compilation step tgz
       run: |
@@ -551,7 +583,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: Compilation environment (Rendering) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
 
   # ========================
@@ -577,6 +609,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: Compilation environment for ${{ matrix.arch }}-shared
+        if_false: Compilation environment for ${{ matrix.arch }}-static
+
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
@@ -591,13 +631,13 @@ jobs:
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
-        name: Compilation environment (Rendering) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
       uses: geekyeggo/delete-artifact@v2
       with:
-        name: Compilation environment (Rendering) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
 
     - name: Extract previous compilation step tgz
       run: |
@@ -652,7 +692,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: Compilation environment (Filters) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz
         
   # ========================
@@ -678,6 +718,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: Compilation environment for ${{ matrix.arch }}-shared
+        if_false: Compilation environment for ${{ matrix.arch }}-static
+
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.0.1
       with:
@@ -692,13 +740,13 @@ jobs:
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
-        name: Compilation environment (Filters) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
       uses: geekyeggo/delete-artifact@v2
       with:
-        name: Compilation environment (Filters) for ${{ matrix.arch }}
+        name: ${{ steps.artifact_name.outputs.value }}
 
     - name: Extract previous compilation step tgz
       run: |
