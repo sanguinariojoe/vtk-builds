@@ -338,7 +338,7 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}/artifacts/
+        cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz
 
@@ -434,7 +434,7 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}/artifacts/
+        cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz
 
@@ -530,7 +530,7 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}/artifacts/
+        cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
 
@@ -626,7 +626,7 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}/artifacts/
+        cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz
 
