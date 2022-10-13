@@ -282,6 +282,7 @@ jobs:
 
     - name: Extract VTK tgz
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
     
     - name: List files
@@ -365,6 +366,7 @@ jobs:
 
     - name: Extract VTK tgz
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
     
     - name: List files
@@ -448,6 +450,7 @@ jobs:
 
     - name: Extract VTK tgz
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
     
     - name: List files
@@ -531,6 +534,7 @@ jobs:
 
     - name: Extract VTK tgz
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
     
     - name: List files
@@ -614,6 +618,7 @@ jobs:
 
     - name: Extract VTK tgz
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
     
     - name: List files
