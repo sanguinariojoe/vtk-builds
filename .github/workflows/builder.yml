@@ -242,7 +242,7 @@ jobs:
       uses: a7ul/tar-action@v1.1.0
       with:
         command: c
-        cwd: ${{github.workspace}}/artifacts/
+        cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz
 
@@ -274,19 +274,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
+
+    - name: Extract VTK tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Common) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
-    - name: Extract VTK tgz
+    - name: Extract previous compilation step tgz
       run: |
-          mkdir -p ${{github.workspace}}/artifacts/
-          tar -xvzf ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
-    
+          mkdir -p ${{github.workspace}}/artifacts/build
+          tar -xvzf ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+
     - name: List files
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/install
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
@@ -358,19 +370,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
+
+    - name: Extract VTK tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (IO) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
-    - name: Extract VTK tgz
+    - name: Extract previous compilation step tgz
       run: |
-          mkdir -p ${{github.workspace}}/artifacts/
-          tar -xvzf ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
-    
+          mkdir -p ${{github.workspace}}/artifacts/build
+          tar -xvzf ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+
     - name: List files
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/install
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
@@ -442,19 +466,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
+
+    - name: Extract VTK tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Imaging) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
-    - name: Extract VTK tgz
+    - name: Extract previous compilation step tgz
       run: |
-          mkdir -p ${{github.workspace}}/artifacts/
-          tar -xvzf ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
-    
+          mkdir -p ${{github.workspace}}/artifacts/build
+          tar -xvzf ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+
     - name: List files
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/install
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
@@ -526,19 +562,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
+
+    - name: Extract VTK tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
         name: Compilation environment (Rendering) for ${{ matrix.arch }}
         path: ${{github.workspace}}/
 
-    - name: Extract VTK tgz
+    - name: Extract previous compilation step tgz
       run: |
-          mkdir -p ${{github.workspace}}/artifacts/
-          tar -xvzf ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
-    
+          mkdir -p ${{github.workspace}}/artifacts/build
+          tar -xvzf ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+
     - name: List files
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/install
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
@@ -610,19 +658,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
 
-    - name: download previous compilation step
-      uses: actions/download-artifact@master
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
       with:
-        name: Compilation environment (Rendering) for ${{ matrix.arch }}
-        path: ${{github.workspace}}/
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
 
     - name: Extract VTK tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/
-          tar -xvzf ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/
-    
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
+    - name: download previous compilation step
+      uses: actions/download-artifact@master
+      with:
+        name: Compilation environment (Filters) for ${{ matrix.arch }}
+        path: ${{github.workspace}}/
+
+    - name: Extract previous compilation step tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/build
+          tar -xvzf ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+
     - name: List files
       run: |
+          mkdir -p ${{github.workspace}}/artifacts/install
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
