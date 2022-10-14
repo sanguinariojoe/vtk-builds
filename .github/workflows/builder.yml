@@ -267,7 +267,7 @@ jobs:
   build_multiarch_filters:
     runs-on: ubuntu-22.04
     needs: [build_multiarch_common]
-    name: Build Rendering on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build Filters on ${{ matrix.distro }} ${{ matrix.arch }}
 
     strategy:
       matrix:
@@ -378,7 +378,7 @@ jobs:
   build_multiarch_imaging:
     runs-on: ubuntu-22.04
     needs: [build_multiarch_filters]
-    name: Build Rendering on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build Imaging on ${{ matrix.distro }} ${{ matrix.arch }}
 
     strategy:
       matrix:
