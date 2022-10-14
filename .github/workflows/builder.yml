@@ -152,7 +152,7 @@ jobs:
         asset_content_type: application/zip
 
   # ========================
-  # MULTIARCH: CommonCore
+  # MULTIARCH: Common
   # ========================
   build_multiarch_common:
     runs-on: ubuntu-22.04
@@ -244,7 +244,7 @@ jobs:
 
         run: |
           cmake -B /artifacts/build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/artifacts/install /artifacts/VTK-${version_major}.${version_minor}.${version_patch}
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target CommonCore
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Common | sed 's/\.\.\./ /g' | tr '\n' ' ' `
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -260,7 +260,7 @@ jobs:
         path: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz
 
   # ========================
-  # MULTIARCH: IOCore
+  # MULTIARCH: IO
   # ========================
   build_multiarch_io:
     runs-on: ubuntu-22.04
@@ -353,7 +353,7 @@ jobs:
           apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target IOCore
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep IO | sed 's/\.\.\./ /g' | tr '\n' ' ' `
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -369,7 +369,7 @@ jobs:
         path: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz
         
   # ========================
-  # MULTIARCH: RenderingCore
+  # MULTIARCH: Rendering
   # ========================
   build_multiarch_rendering:
     runs-on: ubuntu-22.04
@@ -462,7 +462,7 @@ jobs:
           apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target RenderingCore
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Rendering | sed 's/\.\.\./ /g' | tr '\n' ' ' `
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -478,12 +478,12 @@ jobs:
         path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
         
   # ========================
-  # MULTIARCH: All
+  # MULTIARCH: Filters
   # ========================
-  build_multiarch_all:
+  build_multiarch_filters:
     runs-on: ubuntu-22.04
-    needs: [create_release, build_multiarch_rendering]
-    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+    needs: [build_multiarch_rendering]
+    name: Build Rendering on ${{ matrix.distro }} ${{ matrix.arch }}
 
     strategy:
       matrix:
@@ -534,6 +534,115 @@ jobs:
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
           tar -xvzf ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+
+    - name: List files
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/install
+          ls ${{github.workspace}}/artifacts/
+
+    - name: Build
+      uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
+
+        # Not required, but speeds up builds
+        githubToken: ${{ github.token }}
+
+        # Mount the artifacts directory as /artifacts in the container
+        dockerRunArgs: |
+          --volume "${{github.workspace}}/artifacts:/artifacts"
+
+        # Pass some environment variables to the container
+        env: | # YAML, but pipe character is necessary
+          threads: ${{ inputs.threads }}
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}            
+
+        shell: /bin/sh
+
+        # Install some dependencies in the container. This speeds up builds if
+        # you are also using githubToken. Any dependencies installed here will
+        # be part of the container image that gets cached, so subsequent
+        # builds don't have to re-install them. The image layer is cached
+        # publicly in your project's package repository, so it is vital that
+        # no secrets are present in the container state or logs.
+        install: |
+          apt-get update -q -y
+          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
+
+        run: |
+          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Filters | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+
+    - name: Create artifact
+      uses: a7ul/tar-action@v1.1.0
+      with:
+        command: c
+        cwd: ${{github.workspace}}/artifacts/build/
+        files: ./
+        outPath: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: filters_${{ steps.artifact_name.outputs.value }}
+        path: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz
+        
+  # ========================
+  # MULTIARCH: All
+  # ========================
+  build_multiarch_all:
+    runs-on: ubuntu-22.04
+    needs: [create_release, build_multiarch_filters]
+    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+
+    strategy:
+      matrix:
+        include:
+          - arch: armv7
+            distro: ubuntu22.04
+          - arch: aarch64
+            distro: ubuntu22.04
+          - arch: s390x
+            distro: ubuntu22.04
+          - arch: ppc64le
+            distro: ubuntu22.04
+
+    steps:
+    - uses: actions/checkout@v2.1.0
+
+    - name: artifact name
+      uses: haya14busa/action-cond@v1
+      id: artifact_name
+      with:
+        cond: ${{ inputs.shared }}
+        if_true: compilation_${{ matrix.arch }}_shared
+        if_false: compilation_${{ matrix.arch }}_static
+
+    - name: download VTK
+      uses: suisei-cn/actions-download-file@v1.0.1
+      with:
+        url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
+        target: ${{github.workspace}}/
+
+    - name: Extract VTK tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/
+          tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
+    - name: download previous compilation step
+      uses: actions/download-artifact@master
+      with:
+        name: filters_${{ steps.artifact_name.outputs.value }}
+        path: ${{github.workspace}}/
+
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: filters_${{ steps.artifact_name.outputs.value }}
+
+    - name: Extract previous compilation step tgz
+      run: |
+          mkdir -p ${{github.workspace}}/artifacts/build
+          tar -xvzf ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
 
     - name: List files
       run: |
