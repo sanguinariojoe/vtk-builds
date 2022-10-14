@@ -244,7 +244,9 @@ jobs:
 
         run: |
           cmake -B /artifacts/build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/artifacts/install /artifacts/VTK-${version_major}.${version_minor}.${version_patch}
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Common | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd /artifacts/build
+          cmake --build ./ --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Common | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd ../..
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -353,7 +355,9 @@ jobs:
           apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep IO | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd /artifacts/build
+          cmake --build ./ --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep IO | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd ../..
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -462,7 +466,9 @@ jobs:
           apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Rendering | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd /artifacts/build
+          cmake --build ./ --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Rendering | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd ../..
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
@@ -571,7 +577,9 @@ jobs:
           apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
-          cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Filters | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd /artifacts/build
+          cmake --build ./ --config ${BUILD_TYPE} -j ${threads} --target ` make help | grep Filters | sed 's/\.\.\./ /g' | tr '\n' ' ' `
+          cd ../..
 
     - name: Create artifact
       uses: a7ul/tar-action@v1.1.0
