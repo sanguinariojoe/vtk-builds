@@ -9,15 +9,15 @@ jobs:
     uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml@main
     with:
       version_major: 9
-      version_minor: 1
-      version_patch: 0
+      version_minor: 2
+      version_patch: 2
       shared: true
     secrets: inherit
   static:
     uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml@main
     with:
       version_major: 9
-      version_minor: 1
-      version_patch: 0
+      version_minor: 2
+      version_patch: 2
       shared: false
     secrets: inherit
