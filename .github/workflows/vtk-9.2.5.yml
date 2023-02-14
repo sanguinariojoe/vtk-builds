@@ -1,8 +1,8 @@
-name: VTK-9.1.0
+name: VTK-9.2.5
 
 on:
   push:
-    branches: [ disabled ]
+    branches: [ main ]
 
 jobs:
   shared:
@@ -10,7 +10,7 @@ jobs:
     with:
       version_major: 9
       version_minor: 2
-      version_patch: 2
+      version_patch: 5
       shared: true
     secrets: inherit
   static:
@@ -18,6 +18,6 @@ jobs:
     with:
       version_major: 9
       version_minor: 2
-      version_patch: 2
+      version_patch: 5
       shared: false
     secrets: inherit
