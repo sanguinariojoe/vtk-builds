@@ -162,7 +162,7 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: BUILD_SHARED_LIBS value
       uses: haya14busa/action-cond@v1
@@ -273,7 +273,7 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -384,7 +384,7 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -495,7 +495,7 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -606,7 +606,7 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -717,7 +717,7 @@ jobs:
             distro: ubuntu22.04
 
     steps:
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
