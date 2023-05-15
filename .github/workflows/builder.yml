@@ -84,7 +84,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
@@ -186,7 +186,7 @@ jobs:
           mkdir -p ${{github.workspace}}/artifacts/install
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
@@ -284,7 +284,7 @@ jobs:
         if_false: compilation_${{ matrix.arch }}_static
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
@@ -395,7 +395,7 @@ jobs:
         if_false: compilation_${{ matrix.arch }}_static
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
@@ -506,7 +506,7 @@ jobs:
         if_false: compilation_${{ matrix.arch }}_static
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
@@ -617,7 +617,7 @@ jobs:
         if_false: compilation_${{ matrix.arch }}_static
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
@@ -728,7 +728,7 @@ jobs:
         if_false: compilation_${{ matrix.arch }}_static
 
     - name: download VTK
-      uses: suisei-cn/actions-download-file@v1.3.0
+      uses: suisei-cn/actions-download-file@v1.4.0
       with:
         url: https://vtk.org/files/release/${{ inputs.version_major }}.${{ inputs.version_minor }}/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
         target: ${{github.workspace}}/
