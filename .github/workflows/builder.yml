@@ -76,6 +76,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     needs: [create_release]
+    name: Build Windows & Mac
     strategy:
         matrix:
             os: [ubuntu-22.04, windows-latest, macOS-latest]
@@ -147,7 +148,8 @@ jobs:
   # ========================
   build_multiarch_common:
     runs-on: ubuntu-22.04
-    name: Build Common on ${{ matrix.distro }} ${{ matrix.arch }}
+    needs: [create_release]
+    name: Build Common on ${{ matrix.base_image }}
 
     strategy:
       matrix:
@@ -211,6 +213,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
+        base_image: ${{ matrix.base_image }}
 
         # Not required, but speeds up builds
         githubToken: ${{ github.token }}
