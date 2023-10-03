@@ -79,7 +79,7 @@ jobs:
     name: Build Windows & Mac
     strategy:
         matrix:
-            os: [ubuntu-22.04, windows-latest, macOS-latest]
+            os: [windows-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v3
