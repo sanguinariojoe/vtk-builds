@@ -156,19 +156,19 @@ jobs:
         include:
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_x86_64
+            base_image: manylinux2014_x86_64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_i686
+            base_image: manylinux2014_i686
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_aarch64
+            base_image: manylinux2014_aarch64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_ppc64le
+            base_image: manylinux2014_ppc64le
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_s390x
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -213,7 +213,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-        base_image: ${{ matrix.base_image }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -262,19 +262,19 @@ jobs:
         include:
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_x86_64
+            base_image: manylinux2014_x86_64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_i686
+            base_image: manylinux2014_i686
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_aarch64
+            base_image: manylinux2014_aarch64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_ppc64le
+            base_image: manylinux2014_ppc64le
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_s390x
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -324,7 +324,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-        base_image: ${{ matrix.base_image }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -368,19 +368,19 @@ jobs:
         include:
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_x86_64
+            base_image: manylinux2014_x86_64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_i686
+            base_image: manylinux2014_i686
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_aarch64
+            base_image: manylinux2014_aarch64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_ppc64le
+            base_image: manylinux2014_ppc64le
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_s390x
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -430,7 +430,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-        base_image: ${{ matrix.base_image }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -474,19 +474,19 @@ jobs:
         include:
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_x86_64
+            base_image: manylinux2014_x86_64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_i686
+            base_image: manylinux2014_i686
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_aarch64
+            base_image: manylinux2014_aarch64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_ppc64le
+            base_image: manylinux2014_ppc64le
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_s390x
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -536,7 +536,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-        base_image: ${{ matrix.base_image }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -580,19 +580,19 @@ jobs:
         include:
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_x86_64
+            base_image: manylinux2014_x86_64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_i686
+            base_image: manylinux2014_i686
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_aarch64
+            base_image: manylinux2014_aarch64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_ppc64le
+            base_image: manylinux2014_ppc64le
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_s390x
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -642,7 +642,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-        base_image: ${{ matrix.base_image }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -686,19 +686,19 @@ jobs:
         include:
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_x86_64
+            base_image: manylinux2014_x86_64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_i686
+            base_image: manylinux2014_i686
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_aarch64
+            base_image: manylinux2014_aarch64
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_ppc64le
+            base_image: manylinux2014_ppc64le
           - arch: none
             distro: none
-            base_image: quay.io/pypa/manylinux2014_s390x
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -748,7 +748,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-        base_image: ${{ matrix.base_image }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
