@@ -215,9 +215,6 @@ jobs:
         distro: ${{ matrix.distro }}
         base_image: ${{ matrix.base_image }}
 
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
-
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
           --volume "${{github.workspace}}/artifacts:/artifacts"
@@ -232,16 +229,6 @@ jobs:
           CMAKE_OPTIONS: ${{ env.CMAKE_OPTIONS }} ${{ steps.BUILD_SHARED_LIBS.outputs.value }}
 
         shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
           cmake -B /artifacts/build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/artifacts/install /artifacts/VTK-${version_major}.${version_minor}.${version_patch}
