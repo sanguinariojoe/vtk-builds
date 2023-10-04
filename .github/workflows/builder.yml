@@ -38,7 +38,7 @@ jobs:
       release_id: ${{ steps.create_release.outputs.id }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Determine release name
       uses: haya14busa/action-cond@v1
@@ -82,7 +82,7 @@ jobs:
             os: [windows-latest, macOS-latest]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.4.0
@@ -171,7 +171,7 @@ jobs:
             base_image: manylinux2014_s390x
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: BUILD_SHARED_LIBS value
       uses: haya14busa/action-cond@v1
@@ -277,7 +277,7 @@ jobs:
             base_image: manylinux2014_s390x
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -383,7 +383,7 @@ jobs:
             base_image: manylinux2014_s390x
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -489,7 +489,7 @@ jobs:
             base_image: manylinux2014_s390x
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -595,7 +595,7 @@ jobs:
             base_image: manylinux2014_s390x
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
@@ -701,7 +701,7 @@ jobs:
             base_image: manylinux2014_s390x
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: artifact name
       uses: haya14busa/action-cond@v1
