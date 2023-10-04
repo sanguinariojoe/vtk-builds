@@ -76,9 +76,10 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     needs: [create_release]
+    name: Build Windows & Mac
     strategy:
         matrix:
-            os: [ubuntu-22.04, windows-latest, macOS-latest]
+            os: [windows-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -147,19 +148,27 @@ jobs:
   # ========================
   build_multiarch_common:
     runs-on: ubuntu-22.04
-    name: Build Common on ${{ matrix.distro }} ${{ matrix.arch }}
+    needs: [create_release]
+    name: Build Common on ${{ matrix.base_image }}
 
     strategy:
       matrix:
         include:
-          - arch: armv7
-            distro: ubuntu22.04
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: s390x
-            distro: ubuntu22.04
-          - arch: ppc64le
-            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: manylinux2014_x86_64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_i686
+          - arch: none
+            distro: none
+            base_image: manylinux2014_aarch64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_ppc64le
+          - arch: none
+            distro: none
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -177,8 +186,8 @@ jobs:
       id: artifact_name
       with:
         cond: ${{ inputs.shared }}
-        if_true: compilation_${{ matrix.arch }}_shared
-        if_false: compilation_${{ matrix.arch }}_static
+        if_true: compilation_${{ matrix.base_image }}_shared
+        if_false: compilation_${{ matrix.base_image }}_static
 
     - name: Create folders
       run: |
@@ -204,9 +213,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -223,16 +230,6 @@ jobs:
 
         shell: /bin/sh
 
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
-
         run: |
           cmake -B /artifacts/build -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/artifacts/install /artifacts/VTK-${version_major}.${version_minor}.${version_patch}
           cd /artifacts/build
@@ -245,12 +242,12 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
-        outPath: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.base_image }}.tar.gz
 
     - uses: actions/upload-artifact@v3
       with:
         name: common_${{ steps.artifact_name.outputs.value }}
-        path: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.base_image }}.tar.gz
 
   # ========================
   # MULTIARCH: Filters
@@ -258,19 +255,26 @@ jobs:
   build_multiarch_filters:
     runs-on: ubuntu-22.04
     needs: [build_multiarch_common]
-    name: Build Filters on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build Filters on ${{ matrix.base_image }}
 
     strategy:
       matrix:
         include:
-          - arch: armv7
-            distro: ubuntu22.04
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: s390x
-            distro: ubuntu22.04
-          - arch: ppc64le
-            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: manylinux2014_x86_64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_i686
+          - arch: none
+            distro: none
+            base_image: manylinux2014_aarch64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_ppc64le
+          - arch: none
+            distro: none
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -280,8 +284,8 @@ jobs:
       id: artifact_name
       with:
         cond: ${{ inputs.shared }}
-        if_true: compilation_${{ matrix.arch }}_shared
-        if_false: compilation_${{ matrix.arch }}_static
+        if_true: compilation_${{ matrix.base_image }}_shared
+        if_false: compilation_${{ matrix.base_image }}_static
 
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.4.0
@@ -308,7 +312,7 @@ jobs:
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
-          tar -xvzf ${{github.workspace}}/vtk-common-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+          tar -xvzf ${{github.workspace}}/vtk-common-artifacts-${{ matrix.base_image }}.tar.gz -C ${{github.workspace}}/artifacts/build/
 
     - name: List files
       run: |
@@ -320,9 +324,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -334,16 +336,6 @@ jobs:
           BUILD_TYPE: ${{ env.BUILD_TYPE }}            
 
         shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
           cd /artifacts/build
@@ -356,12 +348,12 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
-        outPath: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.base_image }}.tar.gz
 
     - uses: actions/upload-artifact@v3
       with:
         name: filters_${{ steps.artifact_name.outputs.value }}
-        path: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.base_image }}.tar.gz
         
   # ========================
   # MULTIARCH: Imaging
@@ -369,19 +361,26 @@ jobs:
   build_multiarch_imaging:
     runs-on: ubuntu-22.04
     needs: [build_multiarch_filters]
-    name: Build Imaging on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build Imaging on ${{ matrix.base_image }}
 
     strategy:
       matrix:
         include:
-          - arch: armv7
-            distro: ubuntu22.04
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: s390x
-            distro: ubuntu22.04
-          - arch: ppc64le
-            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: manylinux2014_x86_64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_i686
+          - arch: none
+            distro: none
+            base_image: manylinux2014_aarch64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_ppc64le
+          - arch: none
+            distro: none
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -391,8 +390,8 @@ jobs:
       id: artifact_name
       with:
         cond: ${{ inputs.shared }}
-        if_true: compilation_${{ matrix.arch }}_shared
-        if_false: compilation_${{ matrix.arch }}_static
+        if_true: compilation_${{ matrix.base_image }}_shared
+        if_false: compilation_${{ matrix.base_image }}_static
 
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.4.0
@@ -419,7 +418,7 @@ jobs:
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
-          tar -xvzf ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+          tar -xvzf ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.base_image }}.tar.gz -C ${{github.workspace}}/artifacts/build/
 
     - name: List files
       run: |
@@ -431,9 +430,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -445,16 +442,6 @@ jobs:
           BUILD_TYPE: ${{ env.BUILD_TYPE }}            
 
         shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
           cd /artifacts/build
@@ -467,12 +454,12 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
-        outPath: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.base_image }}.tar.gz
 
     - uses: actions/upload-artifact@v3
       with:
         name: imaging_${{ steps.artifact_name.outputs.value }}
-        path: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.base_image }}.tar.gz
         
   # ========================
   # MULTIARCH: Rendering
@@ -480,19 +467,26 @@ jobs:
   build_multiarch_rendering:
     runs-on: ubuntu-22.04
     needs: [build_multiarch_imaging]
-    name: Build Rendering on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build Rendering on ${{ matrix.base_image }}
 
     strategy:
       matrix:
         include:
-          - arch: armv7
-            distro: ubuntu22.04
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: s390x
-            distro: ubuntu22.04
-          - arch: ppc64le
-            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: manylinux2014_x86_64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_i686
+          - arch: none
+            distro: none
+            base_image: manylinux2014_aarch64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_ppc64le
+          - arch: none
+            distro: none
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -502,8 +496,8 @@ jobs:
       id: artifact_name
       with:
         cond: ${{ inputs.shared }}
-        if_true: compilation_${{ matrix.arch }}_shared
-        if_false: compilation_${{ matrix.arch }}_static
+        if_true: compilation_${{ matrix.base_image }}_shared
+        if_false: compilation_${{ matrix.base_image }}_static
 
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.4.0
@@ -530,7 +524,7 @@ jobs:
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
-          tar -xvzf ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+          tar -xvzf ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.base_image }}.tar.gz -C ${{github.workspace}}/artifacts/build/
 
     - name: List files
       run: |
@@ -542,9 +536,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -556,16 +548,6 @@ jobs:
           BUILD_TYPE: ${{ env.BUILD_TYPE }}            
 
         shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
           cd /artifacts/build
@@ -578,12 +560,12 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
-        outPath: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.base_image }}.tar.gz
 
     - uses: actions/upload-artifact@v3
       with:
         name: rendering_${{ steps.artifact_name.outputs.value }}
-        path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.base_image }}.tar.gz
         
   # ========================
   # MULTIARCH: IO
@@ -591,19 +573,26 @@ jobs:
   build_multiarch_io:
     runs-on: ubuntu-22.04
     needs: [build_multiarch_rendering]
-    name: Build IO on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build IO on ${{ matrix.base_image }}
 
     strategy:
       matrix:
         include:
-          - arch: armv7
-            distro: ubuntu22.04
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: s390x
-            distro: ubuntu22.04
-          - arch: ppc64le
-            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: manylinux2014_x86_64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_i686
+          - arch: none
+            distro: none
+            base_image: manylinux2014_aarch64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_ppc64le
+          - arch: none
+            distro: none
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -613,8 +602,8 @@ jobs:
       id: artifact_name
       with:
         cond: ${{ inputs.shared }}
-        if_true: compilation_${{ matrix.arch }}_shared
-        if_false: compilation_${{ matrix.arch }}_static
+        if_true: compilation_${{ matrix.base_image }}_shared
+        if_false: compilation_${{ matrix.base_image }}_static
 
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.4.0
@@ -641,7 +630,7 @@ jobs:
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
-          tar -xvzf ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+          tar -xvzf ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.base_image }}.tar.gz -C ${{github.workspace}}/artifacts/build/
 
     - name: List files
       run: |
@@ -653,9 +642,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -667,16 +654,6 @@ jobs:
           BUILD_TYPE: ${{ env.BUILD_TYPE }}            
 
         shell: /bin/sh
-
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
 
         run: |
           cd /artifacts/build
@@ -689,12 +666,12 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
-        outPath: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.base_image }}.tar.gz
 
     - uses: actions/upload-artifact@v3
       with:
         name: io_${{ steps.artifact_name.outputs.value }}
-        path: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz
+        path: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.base_image }}.tar.gz
         
   # ========================
   # MULTIARCH: All
@@ -702,19 +679,26 @@ jobs:
   build_multiarch_all:
     runs-on: ubuntu-22.04
     needs: [create_release, build_multiarch_io]
-    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build All on ${{ matrix.base_image }}
 
     strategy:
       matrix:
         include:
-          - arch: armv7
-            distro: ubuntu22.04
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: s390x
-            distro: ubuntu22.04
-          - arch: ppc64le
-            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: manylinux2014_x86_64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_i686
+          - arch: none
+            distro: none
+            base_image: manylinux2014_aarch64
+          - arch: none
+            distro: none
+            base_image: manylinux2014_ppc64le
+          - arch: none
+            distro: none
+            base_image: manylinux2014_s390x
 
     steps:
     - uses: actions/checkout@v3
@@ -724,8 +708,8 @@ jobs:
       id: artifact_name
       with:
         cond: ${{ inputs.shared }}
-        if_true: compilation_${{ matrix.arch }}_shared
-        if_false: compilation_${{ matrix.arch }}_static
+        if_true: compilation_${{ matrix.base_image }}_shared
+        if_false: compilation_${{ matrix.base_image }}_static
 
     - name: download VTK
       uses: suisei-cn/actions-download-file@v1.4.0
@@ -752,7 +736,7 @@ jobs:
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
-          tar -xvzf ${{github.workspace}}/vtk-io-artifacts-${{ matrix.arch }}.tar.gz -C ${{github.workspace}}/artifacts/build/
+          tar -xvzf ${{github.workspace}}/vtk-io-artifacts-${{ matrix.base_image }}.tar.gz -C ${{github.workspace}}/artifacts/build/
 
     - name: List files
       run: |
@@ -764,9 +748,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-        # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
+        base_image: quay.io/pypa/${{ matrix.base_image }}
 
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
@@ -779,16 +761,6 @@ jobs:
 
         shell: /bin/sh
 
-        # Install some dependencies in the container. This speeds up builds if
-        # you are also using githubToken. Any dependencies installed here will
-        # be part of the container image that gets cached, so subsequent
-        # builds don't have to re-install them. The image layer is cached
-        # publicly in your project's package repository, so it is vital that
-        # no secrets are present in the container state or logs.
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y build-essential cmake curl libopenmpi-dev libopengl-dev libglx-dev libglw-dev
-
         run: |
           cmake --build /artifacts/build --config ${BUILD_TYPE} -j ${threads}
           cmake --install /artifacts/build --config ${BUILD_TYPE}
@@ -799,7 +771,7 @@ jobs:
         command: c
         cwd: ${{github.workspace}}/artifacts/install/
         files: ./
-        outPath: ${{github.workspace}}/vtk-Linux-${{ matrix.arch }}.tar.gz
+        outPath: ${{github.workspace}}/vtk-${{ matrix.base_image }}.tar.gz
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
@@ -807,6 +779,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ${{github.workspace}}/vtk-Linux-${{ matrix.arch }}.tar.gz
-        asset_name: vtk-Linux-${{ matrix.arch }}.tar.gz
+        asset_path: ${{github.workspace}}/vtk-${{ matrix.base_image }}.tar.gz
+        asset_name: vtk-${{ matrix.base_image }}.tar.gz
         asset_content_type: application/zip

@@ -8,11 +8,13 @@ architectures:
 | :--------------: | :-------: |
 |  windows-latest  |  x86_64   |
 |  macOS-latest    |  x86_64   |
-|  ubuntu-22.04    |  x86_64   |
-|  ubuntu-22.04    |  arm-v7   |
-|  ubuntu-22.04    |  aarch64  |
-|  ubuntu-22.04    |  s390x    |
-|  ubuntu-22.04    |  ppc64le  |
+|  manylinux2014   |  x86_64   |
+|  manylinux2014   |  i686\*   |
+|  manylinux2014   |  aarch64  |
+|  manylinux2014   |  ppc64le  |
+|  manylinux2014   |  s390x    |
+
+\* i686 architecture will be deprecated on a future release.
 
 ## Why do I need this?
 
@@ -22,7 +24,7 @@ First, you can find the static libraries among the
 [released files](https://github.com/sanguinariojoe/vtk-builds/releases), so
 you can produce CI/CD pipelines to automagically build standalone packages.
 
-### Pythin wheels
+### Python wheels
 
 Suppose that you have a C/C++ library which links to [VTK](https://vtk.org),
 and it has a Python wrapper. Then I am afraid building the Python wheels it is
@@ -31,16 +33,10 @@ not an easy path...
 However, you can use
 [these releases](https://github.com/sanguinariojoe/vtk-builds/releases) inside
 [cibuildwheel](https://cibuildwheel.readthedocs.io/en/stable/), so you can
-link against a certain [VTK](https://vtk.org) version, adding such a version
-of the [VTK Python package](https://pypi.org/project/vtk/#history) as a
-dependency.
-Finally, in your Python wrapper just do
+link against a certain [VTK](https://vtk.org) version.
 
-```
-import vtk
-```
-
-before start using the VTK-related functions, so the libraries are loaded.
+Because [manylinux2014](https://github.com/pypa/manylinux) is used, pip >= 19.3
+as well as python 3.7.8+, 3.8.4+ or >= 3.9 is required.
 
 ## Some examples
 
