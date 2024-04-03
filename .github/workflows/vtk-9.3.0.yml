@@ -10,7 +10,7 @@ jobs:
     with:
       version_major: 9
       version_minor: 3
-      version_patch: "0.rc1"
+      version_patch: 0
       shared: true
     secrets: inherit
   static:
@@ -18,6 +18,6 @@ jobs:
     with:
       version_major: 9
       version_minor: 3
-      version_patch: "0.rc1"
+      version_patch: 0
       shared: false
     secrets: inherit
