@@ -169,6 +169,21 @@ jobs:
           - arch: none
             distro: none
             base_image: manylinux2014_s390x
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_x86_64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_i686
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_aarch64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_ppc64le
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_s390x
 
     steps:
     - uses: actions/checkout@v4
@@ -275,6 +290,21 @@ jobs:
           - arch: none
             distro: none
             base_image: manylinux2014_s390x
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_x86_64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_i686
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_aarch64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_ppc64le
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_s390x
 
     steps:
     - uses: actions/checkout@v4
@@ -381,6 +411,21 @@ jobs:
           - arch: none
             distro: none
             base_image: manylinux2014_s390x
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_x86_64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_i686
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_aarch64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_ppc64le
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_s390x
 
     steps:
     - uses: actions/checkout@v4
@@ -487,6 +532,21 @@ jobs:
           - arch: none
             distro: none
             base_image: manylinux2014_s390x
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_x86_64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_i686
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_aarch64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_ppc64le
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_s390x
 
     steps:
     - uses: actions/checkout@v4
@@ -593,6 +653,21 @@ jobs:
           - arch: none
             distro: none
             base_image: manylinux2014_s390x
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_x86_64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_i686
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_aarch64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_ppc64le
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_s390x
 
     steps:
     - uses: actions/checkout@v4
@@ -699,6 +774,21 @@ jobs:
           - arch: none
             distro: none
             base_image: manylinux2014_s390x
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_x86_64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_i686
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_aarch64
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_ppc64le
+          - arch: none
+            distro: none
+            base_image: musllinux_1_2_s390x
 
     steps:
     - uses: actions/checkout@v4
