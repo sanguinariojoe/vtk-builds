@@ -126,7 +126,7 @@ jobs:
       run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Create tar.gz
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/install
@@ -252,7 +252,7 @@ jobs:
           cd ../..
 
     - name: Create artifact
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
@@ -373,7 +373,7 @@ jobs:
           cd ../..
 
     - name: Create artifact
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
@@ -494,7 +494,7 @@ jobs:
           cd ../..
 
     - name: Create artifact
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
@@ -615,7 +615,7 @@ jobs:
           cd ../..
 
     - name: Create artifact
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
@@ -736,7 +736,7 @@ jobs:
           cd ../..
 
     - name: Create artifact
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/artifacts/build/
@@ -856,7 +856,7 @@ jobs:
           cmake --install /artifacts/build --config ${BUILD_TYPE}
 
     - name: Create tar.gz
-      uses: a7ul/tar-action@v1.1.3
+      uses: a7ul/tar-action@v1.2.0
       with:
         command: c
         cwd: ${{github.workspace}}/artifacts/install/
