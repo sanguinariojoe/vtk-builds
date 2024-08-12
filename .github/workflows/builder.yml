@@ -335,7 +335,7 @@ jobs:
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v4
+      uses: geekyeggo/delete-artifact@v5
       with:
         name: common_${{ steps.artifact_name.outputs.value }}
 
@@ -456,7 +456,7 @@ jobs:
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v4
+      uses: geekyeggo/delete-artifact@v5
       with:
         name: filters_${{ steps.artifact_name.outputs.value }}
 
@@ -577,7 +577,7 @@ jobs:
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v4
+      uses: geekyeggo/delete-artifact@v5
       with:
         name: imaging_${{ steps.artifact_name.outputs.value }}
 
@@ -698,7 +698,7 @@ jobs:
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v4
+      uses: geekyeggo/delete-artifact@v5
       with:
         name: rendering_${{ steps.artifact_name.outputs.value }}
 
@@ -819,7 +819,7 @@ jobs:
         path: ${{github.workspace}}/
 
     - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v4
+      uses: geekyeggo/delete-artifact@v5
       with:
         name: io_${{ steps.artifact_name.outputs.value }}
 
