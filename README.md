@@ -8,7 +8,6 @@ architectures:
 | :-----------------: | :-------: |
 |  windows-latest     |  x86_64   |
 |  macOS-latest       |  arm64    |
-|  macOS-latest-large |  x86_64   |
 |  manylinux2014      |  x86_64   |
 |  manylinux2014      |  i686\*   |
 |  manylinux2014      |  aarch64  |

@@ -79,7 +79,7 @@ jobs:
     name: Build Windows & Mac
     strategy:
         matrix:
-            os: [windows-latest, macOS-latest, macos-latest-large]
+            os: [windows-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v4
