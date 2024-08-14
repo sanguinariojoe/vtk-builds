@@ -1,4 +1,4 @@
-name: VTK-9.3.1
+name: VTK-9.2.6
 
 on:
   push:
