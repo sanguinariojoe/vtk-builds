@@ -4,15 +4,16 @@ Automatic builds of [VTK](https://vtk.org) built with
 [github actions](https://github.com/features/actions), for several
 architectures:
 
-|        SO        |   Arch    |
-| :--------------: | :-------: |
-|  windows-latest  |  x86_64   |
-|  macOS-latest    |  x86_64   |
-|  manylinux2014   |  x86_64   |
-|  manylinux2014   |  i686\*   |
-|  manylinux2014   |  aarch64  |
-|  manylinux2014   |  ppc64le  |
-|  manylinux2014   |  s390x    |
+|        SO           |   Arch    |
+| :-----------------: | :-------: |
+|  windows-latest     |  x86_64   |
+|  macOS-latest       |  arm64    |
+|  macOS-latest-large |  x86_64   |
+|  manylinux2014      |  x86_64   |
+|  manylinux2014      |  i686\*   |
+|  manylinux2014      |  aarch64  |
+|  manylinux2014      |  ppc64le  |
+|  manylinux2014      |  s390x    |
 
 \* i686 architecture will be deprecated on a future release.
 
