@@ -48,7 +48,7 @@ jobs:
         if_true: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-shared
         if_false: VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}-static
 
-    - uses: dev-drprasad/delete-tag-and-release@v1.0.1
+    - uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         delete_release: true
         tag_name: ${{ steps.release-name.outputs.value }}
