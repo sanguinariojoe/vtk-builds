@@ -96,8 +96,8 @@ jobs:
     
     - name: Patch VTK
       run: |
-          ls ${{github.workspace}}
-          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          ls .
+          PATCH=./patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
           if [ -f "$PATCH" ]; then
               patch -p0 < $PATCH
           fi
