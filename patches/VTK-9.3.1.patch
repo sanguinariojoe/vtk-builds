@@ -38,24 +38,17 @@ diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/
  VTK_ABI_NAMESPACE_BEGIN
 diff -ruN VTK-9.3.1/Rendering/OpenGL2/CMakeLists.txt VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt
 --- VTK-9.3.1/Rendering/OpenGL2/CMakeLists.txt	2024-06-28 18:00:10.000000000 +0200
-+++ VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt	2024-08-15 08:52:40.060376496 +0200
-@@ -441,9 +441,16 @@
-   vtk_module_add_executable(vtkProbeOpenGLVersion
-     ${probe_no_install}
++++ VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt	2024-08-15 09:55:00.424484226 +0200
+@@ -443,9 +443,10 @@
      vtkProbeOpenGLVersion.cxx)
--  target_link_libraries(vtkProbeOpenGLVersion
--    PRIVATE
+   target_link_libraries(vtkProbeOpenGLVersion
+     PRIVATE
 -      VTK::RenderingOpenGL2)
-+  # Static linking on Windows
-+  if (VTK_USE_WIN32_OPENGL AND (NOT CMAKE_CROSSCOMPILING OR DEFINED CMAKE_CROSSCOMPILING_EMULATOR))
-+    target_link_libraries(vtkProbeOpenGLVersion
-+      PRIVATE
-+        VTK::RenderingOpenGL2 opengl32 VTK::CommonCore)
-+  else ()
-+    target_link_libraries(vtkProbeOpenGLVersion
-+      PRIVATE
-+        VTK::RenderingOpenGL2)
-+  endif ()
++      VTK::CommonCore VTK::RenderingOpenGL2)
    vtk_module_autoinit(
      TARGETS vtkProbeOpenGLVersion
-     MODULES VTK::RenderingOpenGL2)
+-    MODULES VTK::RenderingOpenGL2)
++    MODULES VTK::CommonCore
++            VTK::RenderingOpenGL2)
+ endif ()
+ vtk_add_test_mangling(VTK::RenderingOpenGL2)
