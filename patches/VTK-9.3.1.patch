@@ -1,5 +1,5 @@
 diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx VTK-9.3.1.patched/IO/EnSight/vtkEnSight6BinaryReader.cxx
---- VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-06-28 18:00:10.000000000 +0200
+--- VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-08-15 06:41:52.159851155 +0200
 +++ VTK-9.3.1.patched/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-08-15 06:26:08.592479102 +0200
 @@ -32,10 +32,13 @@
  #define VTK_STAT_STRUCT struct stat
@@ -18,7 +18,7 @@ diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx VTK-9.3.1.patched/IO/
  
  VTK_ABI_NAMESPACE_BEGIN
 diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/IO/EnSight/vtkEnSightGoldBinaryReader.cxx
---- VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx	2024-06-28 18:00:10.000000000 +0200
+--- VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx	2024-08-15 06:41:52.159851155 +0200
 +++ VTK-9.3.1.patched/IO/EnSight/vtkEnSightGoldBinaryReader.cxx	2024-08-15 06:26:20.599112124 +0200
 @@ -38,10 +38,13 @@
  #define VTK_STAT_STRUCT struct stat
@@ -36,3 +36,26 @@ diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/
  #endif
  
  VTK_ABI_NAMESPACE_BEGIN
+diff -ruN VTK-9.3.1/Rendering/OpenGL2/CMakeLists.txt VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt
+--- VTK-9.3.1/Rendering/OpenGL2/CMakeLists.txt	2024-06-28 18:00:10.000000000 +0200
++++ VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt	2024-08-15 08:52:40.060376496 +0200
+@@ -441,9 +441,16 @@
+   vtk_module_add_executable(vtkProbeOpenGLVersion
+     ${probe_no_install}
+     vtkProbeOpenGLVersion.cxx)
+-  target_link_libraries(vtkProbeOpenGLVersion
+-    PRIVATE
+-      VTK::RenderingOpenGL2)
++  # Static linking on Windows
++  if (VTK_USE_WIN32_OPENGL AND (NOT CMAKE_CROSSCOMPILING OR DEFINED CMAKE_CROSSCOMPILING_EMULATOR))
++    target_link_libraries(vtkProbeOpenGLVersion
++      PRIVATE
++        VTK::RenderingOpenGL2 opengl32 VTK::CommonCore)
++  else ()
++    target_link_libraries(vtkProbeOpenGLVersion
++      PRIVATE
++        VTK::RenderingOpenGL2)
++  endif ()
+   vtk_module_autoinit(
+     TARGETS vtkProbeOpenGLVersion
+     MODULES VTK::RenderingOpenGL2)
