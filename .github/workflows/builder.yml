@@ -101,6 +101,7 @@ jobs:
           if [ -f "$PATCH" ]; then
               patch -p0 < $PATCH
           fi
+      shell: bash
 
     - name: Create installation folder
       run: |
