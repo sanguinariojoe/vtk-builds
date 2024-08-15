@@ -1,3 +1,37 @@
+diff -ruN VTK-9.3.1/Common/Core/SMP/Common/vtkSMPToolsImpl.h VTK-9.3.1.patched/Common/Core/SMP/Common/vtkSMPToolsImpl.h
+--- VTK-9.3.1/Common/Core/SMP/Common/vtkSMPToolsImpl.h	2024-06-28 18:00:10.000000000 +0200
++++ VTK-9.3.1.patched/Common/Core/SMP/Common/vtkSMPToolsImpl.h	2024-08-15 13:35:52.611819716 +0200
+@@ -43,7 +43,7 @@
+ #endif
+ 
+ template <BackendType Backend>
+-class VTKCOMMONCORE_EXPORT vtkSMPToolsImpl
++class vtkSMPToolsImpl
+ {
+ public:
+   //--------------------------------------------------------------------------------
+@@ -59,7 +59,7 @@
+   bool GetNestedParallelism() { return this->NestedActivated; }
+ 
+   //--------------------------------------------------------------------------------
+-  bool IsParallelScope() { return this->IsParallel; }
++  bool IsParallelScope();
+ 
+   //--------------------------------------------------------------------------------
+   bool GetSingleThread();
+@@ -115,6 +115,12 @@
+   std::atomic<bool> IsParallel{ false };
+ };
+ 
++template <BackendType Backend>
++bool vtkSMPToolsImpl<Backend>::IsParallelScope()
++{
++  return this->IsParallel;
++}
++
+ using ExecuteFunctorPtrType = void (*)(void*, vtkIdType, vtkIdType, vtkIdType);
+ 
+ VTK_ABI_NAMESPACE_END
 diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx VTK-9.3.1.patched/IO/EnSight/vtkEnSight6BinaryReader.cxx
 --- VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-08-15 06:41:52.159851155 +0200
 +++ VTK-9.3.1.patched/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-08-15 06:26:08.592479102 +0200
@@ -36,21 +70,3 @@ diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/
  #endif
  
  VTK_ABI_NAMESPACE_BEGIN
-diff -ruN VTK-9.3.1/Rendering/OpenGL2/CMakeLists.txt VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt
---- VTK-9.3.1/Rendering/OpenGL2/CMakeLists.txt	2024-06-28 18:00:10.000000000 +0200
-+++ VTK-9.3.1.patched/Rendering/OpenGL2/CMakeLists.txt	2024-08-15 12:03:12.915027155 +0200
-@@ -443,9 +443,13 @@
-     vtkProbeOpenGLVersion.cxx)
-   target_link_libraries(vtkProbeOpenGLVersion
-     PRIVATE
-+      VTK::CommonCore
-+      VTK::vtksys
-       VTK::RenderingOpenGL2)
-   vtk_module_autoinit(
-     TARGETS vtkProbeOpenGLVersion
--    MODULES VTK::RenderingOpenGL2)
-+    MODULES VTK::CommonCore
-+            VTK::vtksys
-+            VTK::RenderingOpenGL2)
- endif ()
- vtk_add_test_mangling(VTK::RenderingOpenGL2)
