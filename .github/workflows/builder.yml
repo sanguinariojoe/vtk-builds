@@ -94,10 +94,14 @@ jobs:
       run: |
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz
     
-    - name: List files
+    - name: Patch VTK
       run: |
           ls ${{github.workspace}}
-    
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+
     - name: Create installation folder
       run: |
           mkdir -p ${{github.workspace}}/install
@@ -227,9 +231,15 @@ jobs:
       run: |
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
     
-    - name: List files
+    - name: Patch VTK
       run: |
           ls ${{github.workspace}}/artifacts/
+          cd ${{github.workspace}}/artifacts/
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+          cd ${{github.workspace}}
 
     - name: Build
       uses: uraimo/run-on-arch-action@v2
@@ -335,6 +345,16 @@ jobs:
       run: |
           mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
+    - name: Patch VTK
+      run: |
+          ls ${{github.workspace}}/artifacts/
+          cd ${{github.workspace}}/artifacts/
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+          cd ${{github.workspace}}
 
     - name: download previous compilation step
       uses: actions/download-artifact@master
@@ -457,6 +477,16 @@ jobs:
           mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
 
+    - name: Patch VTK
+      run: |
+          ls ${{github.workspace}}/artifacts/
+          cd ${{github.workspace}}/artifacts/
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+          cd ${{github.workspace}}
+
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
@@ -577,6 +607,16 @@ jobs:
       run: |
           mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
+    - name: Patch VTK
+      run: |
+          ls ${{github.workspace}}/artifacts/
+          cd ${{github.workspace}}/artifacts/
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+          cd ${{github.workspace}}
 
     - name: download previous compilation step
       uses: actions/download-artifact@master
@@ -699,6 +739,16 @@ jobs:
           mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
 
+    - name: Patch VTK
+      run: |
+          ls ${{github.workspace}}/artifacts/
+          cd ${{github.workspace}}/artifacts/
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+          cd ${{github.workspace}}
+
     - name: download previous compilation step
       uses: actions/download-artifact@master
       with:
@@ -819,6 +869,16 @@ jobs:
       run: |
           mkdir -p ${{github.workspace}}/artifacts/
           tar -xvzf VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.tar.gz -C ${{github.workspace}}/artifacts/
+
+    - name: Patch VTK
+      run: |
+          ls ${{github.workspace}}/artifacts/
+          cd ${{github.workspace}}/artifacts/
+          PATCH=${{github.workspace}}/patches/VTK-${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}.patch
+          if [ -f "$PATCH" ]; then
+              patch -p0 < $PATCH
+          fi
+          cd ${{github.workspace}}
 
     - name: download previous compilation step
       uses: actions/download-artifact@master

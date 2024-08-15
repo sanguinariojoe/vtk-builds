@@ -1,0 +1,38 @@
+diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx VTK-9.3.1.patched/IO/EnSight/vtkEnSight6BinaryReader.cxx
+--- VTK-9.3.1/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-06-28 18:00:10.000000000 +0200
++++ VTK-9.3.1.patched/IO/EnSight/vtkEnSight6BinaryReader.cxx	2024-08-15 06:26:08.592479102 +0200
+@@ -32,10 +32,13 @@
+ #define VTK_STAT_STRUCT struct stat
+ #define VTK_STAT_FUNC stat
+ #else
+-// here, we're relying on _FILE_OFFSET_BITS defined in vtkWin32Header.h to help
+-// us on POSIX without resorting to using stat64.
++#if defined _LARGEFILE64_SOURCE
+ #define VTK_STAT_STRUCT struct stat64
+ #define VTK_STAT_FUNC stat64
++#else
++#define VTK_STAT_STRUCT struct stat
++#define VTK_STAT_FUNC stat
++#endif
+ #endif
+ 
+ VTK_ABI_NAMESPACE_BEGIN
+diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/IO/EnSight/vtkEnSightGoldBinaryReader.cxx
+--- VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx	2024-06-28 18:00:10.000000000 +0200
++++ VTK-9.3.1.patched/IO/EnSight/vtkEnSightGoldBinaryReader.cxx	2024-08-15 06:26:20.599112124 +0200
+@@ -38,10 +38,13 @@
+ #define VTK_STAT_STRUCT struct stat
+ #define VTK_STAT_FUNC stat
+ #else
+-// here, we're relying on _FILE_OFFSET_BITS defined in vtkWin32Header.h to help
+-// us on POSIX without resorting to using stat64.
++#if defined _LARGEFILE64_SOURCE
+ #define VTK_STAT_STRUCT struct stat64
+ #define VTK_STAT_FUNC stat64
++#else
++#define VTK_STAT_STRUCT struct stat
++#define VTK_STAT_FUNC stat
++#endif
+ #endif
+ 
+ VTK_ABI_NAMESPACE_BEGIN
