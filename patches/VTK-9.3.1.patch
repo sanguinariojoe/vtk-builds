@@ -70,3 +70,16 @@ diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/
  #endif
  
  VTK_ABI_NAMESPACE_BEGIN
+diff -ruN VTK-9.3.1/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C VTK-9.3.1.patched/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C
+--- VTK-9.3.1/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C	2024-06-28 18:00:10.000000000 +0200
++++ VTK-9.3.1.patched/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C	2024-08-16 06:43:25.622768920 +0200
+@@ -26,7 +26,7 @@
+ #define S_ISDIR(m) (((m)&_S_IFMT) == _S_IFDIR)
+ #endif
+ #else
+-#include <sys/unistd.h>
++#include <unistd.h>
+ #if defined(__APPLE__) && defined(__MACH__)
+ #include <sys/param.h>
+ #include <sys/mount.h>
+Binary files VTK-9.3.1/ThirdParty/vtkm/vtkvtkm/vtk-m/data/data/misc/warpXfields.vtk and VTK-9.3.1.patched/ThirdParty/vtkm/vtkvtkm/vtk-m/data/data/misc/warpXfields.vtk differ
