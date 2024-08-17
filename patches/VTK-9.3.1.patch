@@ -70,6 +70,22 @@ diff -ruN VTK-9.3.1/IO/EnSight/vtkEnSightGoldBinaryReader.cxx VTK-9.3.1.patched/
  #endif
  
  VTK_ABI_NAMESPACE_BEGIN
+diff -ruN VTK-9.3.1/IO/LSDyna/LSDynaFamily.cxx VTK-9.3.1.patched/IO/LSDyna/LSDynaFamily.cxx
+--- VTK-9.3.1/IO/LSDyna/LSDynaFamily.cxx	2024-06-28 18:00:10.000000000 +0200
++++ VTK-9.3.1.patched/IO/LSDyna/LSDynaFamily.cxx	2024-08-17 08:06:28.286128285 +0200
+@@ -24,8 +24,12 @@
+ #if (VTK_SIZEOF_ID_TYPE == 8) && !defined(_DARWIN_FEATURE_64_BIT_INODE) &&                         \
+   !defined(__FreeBSD__) && !defined(__NetBSD__) && !defined(__OpenBSD__)
+ #ifndef _WIN32
++#if defined _LARGEFILE64_SOURCE
+ #define USE_STAT_64
+ #else
++#define USE_STAT
++#endif
++#else
+ #define USE_WIN_STAT_64
+ #endif
+ #else
 diff -ruN VTK-9.3.1/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C VTK-9.3.1.patched/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C
 --- VTK-9.3.1/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C	2024-06-28 18:00:10.000000000 +0200
 +++ VTK-9.3.1.patched/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C	2024-08-16 06:43:25.622768920 +0200
@@ -82,4 +98,3 @@ diff -ruN VTK-9.3.1/ThirdParty/ioss/vtkioss/Ioss_FileInfo.C VTK-9.3.1.patched/Th
  #if defined(__APPLE__) && defined(__MACH__)
  #include <sys/param.h>
  #include <sys/mount.h>
-Binary files VTK-9.3.1/ThirdParty/vtkm/vtkvtkm/vtk-m/data/data/misc/warpXfields.vtk and VTK-9.3.1.patched/ThirdParty/vtkm/vtkvtkm/vtk-m/data/data/misc/warpXfields.vtk differ
