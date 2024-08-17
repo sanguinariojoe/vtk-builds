@@ -363,11 +363,6 @@ jobs:
         name: common_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
-    - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: common_${{ steps.artifact_name.outputs.value }}
-
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -408,6 +403,11 @@ jobs:
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.base_image }}.tar.gz
+
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: common_${{ steps.artifact_name.outputs.value }}
 
     - uses: actions/upload-artifact@v4
       with:
@@ -494,11 +494,6 @@ jobs:
         name: filters_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
-    - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: filters_${{ steps.artifact_name.outputs.value }}
-
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -539,6 +534,11 @@ jobs:
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.base_image }}.tar.gz
+
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: filters_${{ steps.artifact_name.outputs.value }}
 
     - uses: actions/upload-artifact@v4
       with:
@@ -625,11 +625,6 @@ jobs:
         name: imaging_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
-    - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: imaging_${{ steps.artifact_name.outputs.value }}
-
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -670,6 +665,11 @@ jobs:
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.base_image }}.tar.gz
+
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: imaging_${{ steps.artifact_name.outputs.value }}
 
     - uses: actions/upload-artifact@v4
       with:
@@ -756,11 +756,6 @@ jobs:
         name: rendering_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
-    - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: rendering_${{ steps.artifact_name.outputs.value }}
-
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -801,6 +796,11 @@ jobs:
         cwd: ${{github.workspace}}/artifacts/build/
         files: ./
         outPath: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.base_image }}.tar.gz
+
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: rendering_${{ steps.artifact_name.outputs.value }}
 
     - uses: actions/upload-artifact@v4
       with:
@@ -887,11 +887,6 @@ jobs:
         name: io_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/
 
-    - name: remove previous compilation step
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: io_${{ steps.artifact_name.outputs.value }}
-
     - name: Extract previous compilation step tgz
       run: |
           mkdir -p ${{github.workspace}}/artifacts/build
@@ -931,6 +926,11 @@ jobs:
         cwd: ${{github.workspace}}/artifacts/install/
         files: ./
         outPath: ${{github.workspace}}/vtk-${{ matrix.base_image }}.tar.gz
+
+    - name: remove previous compilation step
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: io_${{ steps.artifact_name.outputs.value }}
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
