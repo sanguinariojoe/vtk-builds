@@ -1,4 +1,4 @@
-name: VTK-9.3.1
+name: VTK-9.4.1
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml@main
     with:
       version_major: 9
-      version_minor: 3
+      version_minor: 4
       version_patch: 1
       shared: true
     secrets: inherit
@@ -17,7 +17,7 @@ jobs:
     uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml@main
     with:
       version_major: 9
-      version_minor: 3
+      version_minor: 4
       version_patch: 1
       shared: false
     secrets: inherit
