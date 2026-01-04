@@ -3,8 +3,6 @@ name: VTK-9.5.2
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   shared:
