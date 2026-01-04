@@ -243,7 +243,7 @@ jobs:
           cd ${{github.workspace}}
 
     - name: Build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v3
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
@@ -374,7 +374,7 @@ jobs:
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v3
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
@@ -505,7 +505,7 @@ jobs:
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v3
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
@@ -636,7 +636,7 @@ jobs:
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v3
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
@@ -767,7 +767,7 @@ jobs:
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v3
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
@@ -898,7 +898,7 @@ jobs:
           ls ${{github.workspace}}/artifacts/
 
     - name: Build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v3
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
