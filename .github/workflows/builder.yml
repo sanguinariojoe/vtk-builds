@@ -278,7 +278,7 @@ jobs:
         files: ./
         outPath: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.base_image }}.tar.gz
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: common_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-common-artifacts-${{ matrix.base_image }}.tar.gz
@@ -409,7 +409,7 @@ jobs:
       with:
         name: common_${{ steps.artifact_name.outputs.value }}
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: filters_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-filters-artifacts-${{ matrix.base_image }}.tar.gz
@@ -540,7 +540,7 @@ jobs:
       with:
         name: filters_${{ steps.artifact_name.outputs.value }}
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: imaging_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-imaging-artifacts-${{ matrix.base_image }}.tar.gz
@@ -671,7 +671,7 @@ jobs:
       with:
         name: imaging_${{ steps.artifact_name.outputs.value }}
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: rendering_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-rendering-artifacts-${{ matrix.base_image }}.tar.gz
@@ -802,7 +802,7 @@ jobs:
       with:
         name: rendering_${{ steps.artifact_name.outputs.value }}
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: io_${{ steps.artifact_name.outputs.value }}
         path: ${{github.workspace}}/vtk-io-artifacts-${{ matrix.base_image }}.tar.gz
