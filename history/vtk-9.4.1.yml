@@ -1,0 +1,23 @@
+name: VTK-9.5.1
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  shared:
+    uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml@main
+    with:
+      version_major: 9
+      version_minor: 4
+      version_patch: 1
+      shared: true
+    secrets: inherit
+  static:
+    uses: sanguinariojoe/vtk-builds/.github/workflows/builder.yml@main
+    with:
+      version_major: 9
+      version_minor: 4
+      version_patch: 1
+      shared: false
+    secrets: inherit
